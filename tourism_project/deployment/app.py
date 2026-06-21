@@ -3,19 +3,27 @@ import pandas as pd
 import streamlit as st
 from huggingface_hub import hf_hub_download
 
+st.set_page_config(page_title="Visit with Us Predictor", layout="centered")
+
 MODEL_REPO_ID = "Nikidsouza23/visit-with-us-tourism-model"
 MODEL_FILENAME = "best_tourism_model.joblib"
 
 @st.cache_resource
 def load_model():
-    model_path = hf_hub_download(repo_id=MODEL_REPO_ID, filename=MODEL_FILENAME)
+    model_path = hf_hub_download(
+        repo_id=MODEL_REPO_ID,
+        filename=MODEL_FILENAME
+    )
     return joblib.load(model_path)
 
-model = load_model()
-
-st.set_page_config(page_title="Visit with Us Predictor", layout="centered")
 st.title("Wellness Tourism Package Prediction")
 st.write("Predict whether a customer is likely to purchase the package before contacting them.")
+
+try:
+    model = load_model()
+except Exception as e:
+    st.error(f"Model could not be loaded: {e}")
+    st.stop()
 
 age = st.number_input("Age", min_value=18, max_value=100, value=35)
 typeofcontact = st.selectbox("Type of Contact", ["Company Invited", "Self Enquiry"])

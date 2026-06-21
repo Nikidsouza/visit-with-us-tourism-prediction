@@ -24,7 +24,7 @@ try:
 except RepositoryNotFoundError:
     create_repo(repo_id=DATASET_REPO, repo_type="dataset", private=False, token=HF_TOKEN)
 
-df = pd.read_csv(LOCAL_DATA_PATH)
+df = pd.read_csv(f"hf://datasets/{DATASET_REPO}/tourism.csv")
 print("Dataset loaded successfully.")
 print("Original shape:", df.shape)
 
