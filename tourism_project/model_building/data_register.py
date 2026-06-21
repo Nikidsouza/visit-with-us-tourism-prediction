@@ -1,26 +1,33 @@
-from huggingface_hub.utils import RepositoryNotFoundError, HfHubHTTPError
-from huggingface_hub import HfApi, create_repo
 import os
+from getpass import getpass
+from huggingface_hub import HfApi, create_repo
+from huggingface_hub.utils import RepositoryNotFoundError
 
+HF_TOKEN = os.getenv("HF_TOKEN")
+if not HF_TOKEN:
+    HF_TOKEN = getpass("Enter HF_TOKEN: ").strip()
 
-repo_id = "Nikidsouza23/visit-with-us-tourism-prediction" # Corrected repo ID
-repo_type = "dataset"
+if not HF_TOKEN:
+    raise ValueError("HF_TOKEN is still empty.")
 
-# Initialize API client
-api = HfApi(token=os.getenv("HF_TOKEN"))
+REPO_ID = "Nikidsouza23/visit-with-us-tourism-prediction"
+REPO_TYPE = "dataset"
+LOCAL_DATA_DIR = "tourism_project/data"
 
-# Step 1: Check if the space exists
+api = HfApi(token=HF_TOKEN)
+
 try:
-    api.repo_info(repo_id=repo_id, repo_type=repo_type)
-    print(f"Space '{repo_id}' already exists. Using it.")
+    api.repo_info(repo_id=REPO_ID, repo_type=REPO_TYPE)
+    print(f"Dataset repo '{REPO_ID}' already exists.")
 except RepositoryNotFoundError:
-    print(f"Space '{repo_id}' not found. Creating new space...")
-    create_repo(repo_id=repo_id, repo_type=repo_type, private=False)
-    print(f"Space '{repo_id}' created.")
+    create_repo(repo_id=REPO_ID, repo_type=REPO_TYPE, private=False, token=HF_TOKEN)
+    print(f"Created dataset repo '{REPO_ID}'.")
 
 api.upload_folder(
-    folder_path="tourism_project/data",
-    repo_id=repo_id,
-    repo_type=repo_type,
+    folder_path=LOCAL_DATA_DIR,
+    repo_id=REPO_ID,
+    repo_type=REPO_TYPE,
+    commit_message="Upload raw tourism dataset"
 )
-print("Initial dataset (tourism.csv) uploaded successfully to Hugging Face.")
+
+print("Raw dataset uploaded successfully.")
