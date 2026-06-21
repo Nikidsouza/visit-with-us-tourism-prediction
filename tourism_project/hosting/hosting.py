@@ -6,7 +6,7 @@ HF_TOKEN = os.getenv("HF_TOKEN")
 if not HF_TOKEN:
     raise ValueError("HF_TOKEN is not set.")
 
-SPACE_REPO = "Nikidsouza23/visit-with-us-tourism-app"
+SPACE_REPO = "Nikidsouza23/visit-with-us-tourism-prediction"
 SPACE_SDK = "streamlit"
 LOCAL_DEPLOYMENT_DIR = "tourism_project/deployment"
 
